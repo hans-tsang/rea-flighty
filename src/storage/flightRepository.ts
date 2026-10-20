@@ -62,6 +62,13 @@ export class FlightRepository {
     });
   }
 
+  /** Replace a snapshot only if the flight is still saved (avoids resurrecting removed flights). */
+  updateIfPresent(flight: Flight): Promise<SavedFlight[]> {
+    return this.mutate((flights) =>
+      flights.map((f) => (f.flight.id === flight.id ? { flight, savedAt: f.savedAt } : f)),
+    );
+  }
+
   remove(id: string): Promise<SavedFlight[]> {
     return this.mutate((flights) => flights.filter((f) => f.flight.id !== id));
   }

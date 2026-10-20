@@ -57,6 +57,14 @@ describe('FlightRepository', () => {
     expect((await repo.load()).flights).toHaveLength(4);
   });
 
+  it('does not resurrect a removed flight when a refresh lands late', async () => {
+    const repo = new FlightRepository(new MemoryStore());
+    const flight = await sampleFlight();
+    await repo.upsert(flight);
+    await repo.remove(flight.id);
+    expect(await repo.updateIfPresent(flight)).toEqual([]);
+  });
+
   it('removes flights', async () => {
     const repo = new FlightRepository(new MemoryStore());
     const flight = await sampleFlight();

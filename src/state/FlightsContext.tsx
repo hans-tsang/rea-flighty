@@ -63,7 +63,7 @@ export function FlightsProvider({ children }: { children: ReactNode }) {
   const refreshFlight = useCallback(
     async (id: string) => {
       const fresh = await provider.getFlight(id);
-      setFlights(await repo.upsert(fresh));
+      setFlights(await repo.updateIfPresent(fresh));
     },
     [provider, repo],
   );
